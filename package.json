@@ -1,0 +1,30 @@
+{
+  "name": "git-hubsearch",
+  "version": "0.0.0",
+  "description": "NPM like GitHub search CLI",
+  "main": "index.js",
+  "bin": {
+    "git-hubsearch": "bin/cli"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nak2k/node-git-hubsearch.git"
+  },
+  "keywords": [
+    "git",
+    "github"
+  ],
+  "author": "Kengo Nakatsuka <kengo.nakatsuka@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nak2k/node-git-hubsearch/issues"
+  },
+  "homepage": "https://github.com/nak2k/node-git-hubsearch",
+  "dependencies": {
+    "github-api": "^0.7.0",
+    "columnify": "^0.1.2",
+    "yargs": "^1.2.1",
+    "debug": "^0.8.0"
+  }
+}
