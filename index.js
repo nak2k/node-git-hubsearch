@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014-2014 Kengo Nakatsuka <kengo.nakatsuka@gmail.com>
+ * Copyright 2014-2016 Kengo Nakatsuka <kengo.nakatsuka@gmail.com>
  *
  */
 var Github = require('github-api');
@@ -21,15 +21,9 @@ var yargs = require('yargs')
     u: 'user',
   })
   .describe({
-    help: 'Show help',
     user: '',
   })
-  .check(function(argv) {
-    if (argv.help) {
-      yargs.showHelp();
-      process.exit(0);
-    }
-  });
+  .help();
 
 module.exports = function() {
   var argv = yargs.argv;
