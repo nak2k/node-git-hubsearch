@@ -1,6 +1,6 @@
 {
   "name": "git-hubsearch",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "NPM like GitHub search CLI",
   "main": "index.js",
   "bin": {
