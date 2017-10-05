@@ -4,13 +4,13 @@
  * Copyright 2014-2016 Kengo Nakatsuka <kengo.nakatsuka@gmail.com>
  *
  */
-var Github = require('github-api');
-var columnify = require('columnify');
-var debug = require('debug')('git-hubsearch');
-var inspect = require('util').inspect;
-var chalk = require('chalk');
+const Github = require('github-api');
+const columnify = require('columnify');
+const debug = require('debug')('git-hubsearch');
+const inspect = require('util').inspect;
+const chalk = require('chalk');
 
-var yargs = require('yargs')
+const yargs = require('yargs')
   .boolean(['help', 'fork'])
   .default({
     user: process.env.USER,
@@ -26,13 +26,13 @@ var yargs = require('yargs')
   .help();
 
 module.exports = function() {
-  var argv = yargs.argv;
+  const argv = yargs.argv;
   debug(inspect(argv));
 
-  var github = new Github({});
+  const github = new Github({});
 
-  var criteria = argv._;
-  var user = github.getUser();
+  const criteria = argv._;
+  const user = github.getUser();
 
   user.userRepos(argv.user, function(err, repos) {
     if (err) { error(err); }
@@ -56,7 +56,7 @@ module.exports = function() {
         return repo;
       });
 
-    var output = columnify(repos, {
+    let output = columnify(repos, {
       include: ["name", "description", "pushed_at", "homepage"],
       truncate: false,
       config: {

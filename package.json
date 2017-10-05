@@ -6,7 +6,6 @@
   "bin": {
     "git-hubsearch": "bin/cli"
   },
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/nak2k/node-git-hubsearch.git"
@@ -27,5 +26,12 @@
     "debug": "^3.1.0",
     "github-api": "^3.0.0",
     "yargs": "^9.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.8.0"
+  },
+  "scripts": {
+    "lint": "eslint index.js",
+    "prepare": "npm run lint"
   }
 }
