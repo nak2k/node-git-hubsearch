@@ -1,9 +1,3 @@
-/*
- * The MIT License
- *
- * Copyright 2014-2016 Kengo Nakatsuka <kengo.nakatsuka@gmail.com>
- *
- */
 const Github = require('github-api');
 const columnify = require('columnify');
 const debug = require('debug')('git-hubsearch');
@@ -25,32 +19,27 @@ const yargs = require('yargs')
   })
   .help();
 
-module.exports = function() {
+module.exports = () => {
   const argv = yargs.argv;
   debug(inspect(argv));
 
   const github = new Github({});
 
   const criteria = argv._;
-  const user = github.getUser();
+  const user = github.getUser(argv.user);
 
-  user.userRepos(argv.user, function(err, repos) {
+  user.listRepos((err, repos) => {
     if (err) { error(err); }
 
     repos = repos
-      .filter(function(repo) {
-        return argv.fork || !repo.fork;
-      })
-      .filter(function(repo) {
-        return criteria.length === 0 || criteria.some(function(word) {
-          return repo.name.indexOf(word) >= 0
-            || (repo.description && repo.description.indexOf(word) >= 0);
-        });
-      })
-      .sort(function(a, b) {
-        return a.name > b.name ? 1 : a.name === b.name ? 0 : -1;
-      })
-      .map(function(repo) {
+      .filter(repo => (argv.fork || !repo.fork))
+      .filter(repo =>
+        criteria.length === 0 ||
+        criteria.some(word =>
+          repo.name.indexOf(word) >= 0 ||
+          (repo.description && repo.description.indexOf(word) >= 0)))
+      .sort((a, b) => a.name > b.name ? 1 : a.name === b.name ? 0 : -1)
+      .map(repo => {
         repo.homepage = repo.homepage || repo.html_url;
         repo.pushed_at = new Date(repo.pushed_at).toISOString().split('T')[0];
         return repo;
@@ -65,7 +54,7 @@ module.exports = function() {
       }
     });
 
-    criteria.forEach(function(word) {
+    criteria.forEach(word => {
       output = output.replace(new RegExp(word, 'gim'), chalk.red(word));
     });
 
