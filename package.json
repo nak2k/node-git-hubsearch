@@ -32,6 +32,6 @@
   },
   "scripts": {
     "lint": "eslint index.js",
-    "prepare": "npm run lint"
+    "prepublishOnly": "npm run lint"
   }
 }
