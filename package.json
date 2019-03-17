@@ -1,6 +1,6 @@
 {
   "name": "git-hubsearch",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "NPM like GitHub search CLI",
   "author": "Kengo Nakatsuka <kengo.nakatsuka@gmail.com>",
   "bin": {
