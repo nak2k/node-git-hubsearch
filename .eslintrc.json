@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "eqeqeq": 2,
+    "no-extra-semi": 2,
+    "no-var": 2,
+    "quote-props": [2, "as-needed"],
+    "quotes": [2, "single"]
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  }
+}
