@@ -21,10 +21,10 @@
   },
   "homepage": "https://github.com/nak2k/node-git-hubsearch",
   "dependencies": {
+    "@octokit/rest": "^16.27.3",
     "chalk": "^2.4.1",
     "columnify": "^1.5.4",
     "debug": "^4.0.1",
-    "github-api": "^3.0.0",
     "yargs": "^13.2.2"
   },
   "devDependencies": {
