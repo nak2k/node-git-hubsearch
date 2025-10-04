@@ -21,14 +21,14 @@
   },
   "homepage": "https://github.com/nak2k/node-git-hubsearch",
   "dependencies": {
-    "@octokit/rest": "^16.27.3",
-    "chalk": "^2.4.1",
+    "@octokit/rest": "^22.0.0",
+    "chalk": "^5.6.2",
     "columnify": "^1.5.4",
     "debug": "^4.0.1",
-    "yargs": "^13.2.2"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.4.0"
+    "eslint": "^9.37.0"
   },
   "scripts": {
     "lint": "eslint lib/",
