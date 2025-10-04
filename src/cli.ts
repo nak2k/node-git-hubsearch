@@ -1,13 +1,15 @@
-const Octokit = require('@octokit/rest');
-const columnify = require('columnify');
-const debug = require('debug')('git-hubsearch');
-const inspect = require('util').inspect;
-const chalk = require('chalk');
-const yargs = require('yargs');
-const { showError } = require('./showError');
+import { Octokit } from '@octokit/rest';
+import columnify from 'columnify';
+import createDebug from 'debug';
+import { inspect } from 'util';
+import chalk from 'chalk';
+import yargs from 'yargs';
+import { showError } from './showError.js';
+
+const debug = createDebug('git-hubsearch');
 
 async function main() {
-  const argv = yargs
+  const argv = await yargs(process.argv.slice(2))
     .usage('Usage: $0 [search terms ...]')
     .options({
       fork: {
@@ -35,41 +37,40 @@ async function main() {
 
   debug(inspect(argv));
 
+  if (!process.env.GITHUB_TOKEN) {
+    throw new Error('GITHUB_TOKEN environment variable is required');
+  }
+
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
   });
 
-  const criteria = argv._;
+  const criteria = argv._.map(String).filter(word => word.length > 0);
 
-  let options;
-
-  if (argv.user) {
-    options = octokit.repos.listForUser.endpoint.merge({
+  const repos = await (argv.user
+    ? octokit.paginate(octokit.repos.listForUser, {
       username: argv.user,
       type: 'all',
       per_page: 100,
-    });
-  } else {
-    options = octokit.repos.list.endpoint.merge({
-      type: 'all',
+    })
+    : octokit.paginate(octokit.repos.listForAuthenticatedUser, {
       per_page: 100,
-    });
-  }
+    }));
 
-  const repos = (await octokit.paginate(options))
-    .filter(repo => (argv.fork || !repo.fork))
-    .filter(repo => (!argv.private || repo.private))
-    .filter(repo => (!argv.public || !repo.private))
-    .filter(repo =>
+  const repos2 = repos
+    .filter((repo) => (argv.fork || !repo.fork))
+    .filter((repo) => (!argv.private || repo.private))
+    .filter((repo) => (!argv.public || !repo.private))
+    .filter((repo) =>
       criteria.length === 0 ||
       criteria.some(word =>
         repo.name.indexOf(word) >= 0 ||
         (repo.description && repo.description.indexOf(word) >= 0)))
     .sort((a, b) => a.name > b.name ? 1 : a.name === b.name ? 0 : -1)
-    .map(repo => {
+    .map((repo) => {
       repo.description = repo.description || '';
       repo.homepage = repo.homepage || repo.html_url;
-      repo.pushed_at = new Date(repo.pushed_at).toISOString().split('T')[0];
+      repo.pushed_at = new Date(repo.pushed_at!).toISOString().split('T')[0];
 
       if (repo.private) {
         repo.name = chalk.gray(repo.name);
@@ -81,20 +82,17 @@ async function main() {
       return repo;
     });
 
-  let output = columnify(repos, {
-    include: ['name', 'description', 'pushed_at', 'homepage'],
-    truncate: false,
+  const output = columnify(repos2, {
+    columns: ['name', 'description', 'pushed_at', 'homepage'],
     config: {
-      name: { maxWidth: 40, truncate: false, truncateMarker: '' },
-      description: { },
+      name: { maxWidth: 40 },
+      description: {},
     }
   });
 
-  criteria.forEach(word => {
-    output = output.replace(new RegExp(word, 'gim'), chalk.red(word));
-  });
-
-  console.log(output);
+  console.log(criteria.reduce((output, word) => {
+    return output.replace(new RegExp(word, 'gim'), chalk.red(word));
+  }, output));
 }
 
 main().catch(err => {

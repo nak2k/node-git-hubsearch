@@ -29,11 +29,22 @@
     "yargs": "^18.0.0"
   },
   "devDependencies": {
-    "eslint": "^9.37.0"
+    "@types/columnify": "^1.5.4",
+    "@types/debug": "^4.1.12",
+    "@types/node": "^24.6.2",
+    "@types/yargs": "^17.0.33",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint": "^9.37.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
   },
   "scripts": {
-    "lint": "eslint lib/",
-    "prepublishOnly": "npm run lint",
+    "build": "npm run clean && tsc",
+    "clean": "rimraf lib",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm run build && npm run lint",
     "postpublish": "npm-sns"
   },
   "files": [
