@@ -4,9 +4,29 @@ import createDebug from 'debug';
 import { inspect } from 'util';
 import chalk from 'chalk';
 import yargs from 'yargs';
+import { execSync } from 'child_process';
 import { showError } from './showError.js';
 
 const debug = createDebug('git-hubsearch');
+
+function getGitHubToken(): string {
+  // First, try to get token from environment variable
+  if (process.env.GITHUB_TOKEN) {
+    return process.env.GITHUB_TOKEN;
+  }
+
+  // If not set, try to get token from gh CLI
+  try {
+    const token = execSync('gh auth token', { encoding: 'utf8' }).trim();
+    if (token) {
+      return token;
+    }
+  } catch (error) {
+    // gh CLI is not available or not authenticated
+  }
+
+  throw new Error('GITHUB_TOKEN environment variable is required or gh CLI must be authenticated');
+}
 
 async function main() {
   const argv = await yargs(process.argv.slice(2))
@@ -37,12 +57,10 @@ async function main() {
 
   debug(inspect(argv));
 
-  if (!process.env.GITHUB_TOKEN) {
-    throw new Error('GITHUB_TOKEN environment variable is required');
-  }
+  const token = getGitHubToken();
 
   const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
+    auth: token,
   });
 
   const criteria = argv._.map(String).filter(word => word.length > 0);
